@@ -43,7 +43,7 @@ if st.button("Translate"):
             st.subheader("Translated Text")
             st.write(result)
 
-        except Exception:
-            st.error("Translation service unavailable. Try again.")
-
+        except Exception as e:
+    st.error(f"Translation Error: {e}")
+    st.exception(e)
 st.caption("CodeAlpha AI Internship Project")
