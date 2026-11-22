@@ -1,8 +1,15 @@
+
 import streamlit as st
-import requests
 from deep_translator import GoogleTranslator
 
-st.set_page_config(page_title="Language Translation Tool")
+st.set_page_config(
+    page_title="Language Translation Tool",
+    page_icon="🌍",
+    layout="centered"
+)
+
+st.title("🌍 Language Translation Tool")
+st.write("Translate text into different languages.")
 
 LANGUAGES = {
     "Auto Detect": "auto",
@@ -15,36 +22,51 @@ LANGUAGES = {
     "Japanese": "ja"
 }
 
-st.title("🌐 Language Translation Tool")
-st.write("Translate text into different languages.")
-
 col1, col2 = st.columns(2)
 
 with col1:
-    source = st.selectbox("Source Language", list(LANGUAGES.keys()))
+    source = st.selectbox(
+        "Source Language",
+        list(LANGUAGES.keys())
+    )
 
 with col2:
-    target = st.selectbox("Target Language", list(LANGUAGES.keys())[1:], index=1)
+    target = st.selectbox(
+        "Target Language",
+        list(LANGUAGES.keys())[1:],
+        index=1
+    )
 
-text = st.text_area("Enter Text")
+user_text = st.text_area(
+    "Enter Text",
+    placeholder="Type something here..."
+)
 
-if st.button("Translate"):
-    if not text.strip():
-        st.warning("Enter some text.")
+if st.button("Translate", type="primary"):
+
+    if not user_text.strip():
+        st.warning("Please enter some text.")
+
     elif source == target:
-        st.warning("Select different languages.")
+        st.warning("Please select different languages.")
+
     else:
         try:
-            result = GoogleTranslator(
+            translator = GoogleTranslator(
                 source=LANGUAGES[source],
                 target=LANGUAGES[target]
-            ).translate(text)
+            )
 
-            st.subheader("Translated Text")
-            st.write(result)
-            
-except Exception as e:
+            result = translator.translate(user_text)
+
+            if result:
+                st.subheader("Translated Text")
+                st.success(result)
+            else:
+                st.error("No translation received.")
+
+        except Exception as e:
             st.error(f"Translation Error: {e}")
             st.exception(e)
-     
+
 st.caption("CodeAlpha AI Internship Project")
